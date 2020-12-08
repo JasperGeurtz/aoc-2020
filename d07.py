@@ -40,5 +40,5 @@ def find_children(name):
 
 s2 = find_children(start) - 1
 
-print("s1", s1)
-print("s2", s2)
+print("1:", s1)
+print("2:", s2)

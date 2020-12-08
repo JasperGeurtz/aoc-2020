@@ -2,7 +2,7 @@ import utils
 
 numbers = utils.opener.numbers("input/01.txt")
 
-target = 99920044
+target = 2020
 
 seen = set()
 for n in numbers:
