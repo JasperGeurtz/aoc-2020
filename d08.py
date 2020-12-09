@@ -44,4 +44,4 @@ for i, ix in enumerate(instructions):
     if res:
         break
 
-print("2", s2)
+print("2:", s2)
