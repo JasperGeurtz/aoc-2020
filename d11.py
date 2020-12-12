@@ -1,16 +1,13 @@
 import utils
-import time
+
 m = utils.opener.grid("input/11.txt")
-
-
-start = time.time()
 
 height = len(m)
 width = len(m[0])
 
 dirs = [(-1, -1), (0, -1), (1, -1),
-        (-1, 0),           (1, 0),
-        (-1, 1),  (0, 1),  (1, 1)]
+        (-1,  0),          (1,  0),
+        (-1,  1), (0,  1), (1,  1)]
 
 changed = True
 old = [x[:] for x in m[:]]
@@ -35,15 +32,10 @@ while changed:
                 changed = True
     old = new
 
+s1 = sum([len([el for el in col if el == "#"]) for col in old])
+print("1:", s1)
 
-s1 = 0
-for col in old:
-    for el in col:
-        if el == "#":
-            s1 += 1
-print("1:", s1, time.time() - start)
 
-start = time.time()
 changed = True
 old = [x[:] for x in m[:]]
 while changed:
@@ -75,12 +67,5 @@ while changed:
                 changed = True
     old = new
 
-
-s2 = 0
-for col in old:
-    for el in col:
-        if el == "#":
-            s2 += 1
-print("2:", s2, time.time() - start)
-
-
+s2 = sum([len([el for el in col if el == "#"]) for col in old])
+print("2:", s2)
