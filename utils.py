@@ -34,5 +34,7 @@ class Opener:
     def numbers(self, location):
         return [int(x) for x in self.lines(location)]
 
+    def grid(self, location):
+        return [list(x) for x in self.lines(location)]
 
 opener = Opener()
