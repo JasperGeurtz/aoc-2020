@@ -2,78 +2,44 @@ import utils
 
 m = utils.opener.grid("input/17.txt")
 
-cubes = set()
-for x in range(len(m[0])):
-    for y in range(len(m)):
-        if m[x][y] == "#":
-            cubes.add((x, y, 0))
 
-def neighbours(c):
-    res = set()
-    for i in [-1, 0, 1]:
-        for j in [-1, 0, 1]:
-            for k in [-1, 0, 1]:
-                if (i,j,k) != (0,0,0):
-                    res.add((c[0] + i, c[1] + j, c[2] + k))
+def neighbours(dims):
+    def curried(c):
+        ns = set([tuple(x) for x in neighbours_list(c, dims)])
+        ns.remove(c)
+        return ns
+
+    return curried
+
+
+def neighbours_list(c, dims):
+    if dims == 1:
+        return [[c[0] - 1], [c[0]], [c[0] + 1]]
+    res = []
+    for t in neighbours_list(c, dims - 1):
+        for x in [-1, 0, 1]:
+            res.append(t[:] + [c[dims - 1] + x])
     return res
 
 
-for cycle in range(6):
-    newcubes = set()
-    potential = {}
-    for c in cubes:
-        ns = neighbours(c)
-        valid_ns = len(ns.intersection(cubes))
-        if valid_ns in [2, 3]: # stay ACTIVE:
-            newcubes.add(c)
-
-        future_ns = ns.difference(cubes)
-        for dn in future_ns:
-            potential[dn] = 1 + (potential[dn] if dn in potential else 0)
-        # print(c, valid_ns, ns)
-
-    for pc, pv in potential.items():
-        if pv == 3: # become ACTIVE
-            newcubes.add(pc)
-    cubes = newcubes
-
-print("1:", len(cubes))
+def simulate(grid, dims, cycles=6):
+    neighbours_func = neighbours(dims)
+    cubes = set([tuple([x, y] + ((dims - 2) * [0])) for x in range(len(grid[0])) for y in range(len(grid)) if
+                 grid[x][y] == "#"])
+    for _ in range(cycles):
+        potential = {}
+        oldcubes = set(cubes)
+        for c in oldcubes:
+            ns = neighbours_func(c)
+            if len(ns.intersection(oldcubes)) not in [2, 3]:
+                cubes.remove(c)
+            for dn in ns.difference(oldcubes):
+                potential[dn] = 1 + (potential[dn] if dn in potential else 0)
+        for pc, pv in potential.items():
+            if pv == 3:
+                cubes.add(pc)
+    return cubes
 
 
-
-
-cubes = set()
-for x in range(len(m[0])):
-    for y in range(len(m)):
-        if m[x][y] == "#":
-            cubes.add((x, y, 0, 0))
-
-def neighbours(c):
-    res = set()
-    for i in [-1, 0, 1]:
-        for j in [-1, 0, 1]:
-            for k in [-1, 0, 1]:
-                for l in [-1, 0, 1]:
-                    if (i,j,k, l) != (0,0,0,0):
-                        res.add((c[0] + i, c[1] + j, c[2] + k, c[3] + l))
-    return res
-
-
-for cycle in range(6):
-    newcubes = set()
-    potential = {}
-    for c in cubes:
-        ns = neighbours(c)
-        valid_ns = len(ns.intersection(cubes))
-        if valid_ns in [2, 3]: # stay ACTIVE:
-            newcubes.add(c)
-        future_ns = ns.difference(cubes)
-        for dn in future_ns:
-            potential[dn] = 1 + (potential[dn] if dn in potential else 0)
-
-    for pc, pv in potential.items():
-        if pv == 3: # become ACTIVE
-            newcubes.add(pc)
-    cubes = newcubes
-
-print("2:", len(cubes))
+print("1:", len(simulate(m, 3)))
+print("2:", len(simulate(m, 4)))
