@@ -40,7 +40,7 @@ messages = mm[1].split("\n")[:-1]
 for msg in messages:
     results = check(rules1, msg)
     s1 += 1 if any([valid and not left for valid, left in results]) else 0
-print("1: ", s1)
+print("1:", s1)
 
 m2 = m.replace("8: 42", "8: 42 | 42 8").replace("11: 42 31", "11: 42 31 | 42 11 31")
 rules2 = get_rules(m2.split("\n\n")[0].split("\n"))
@@ -48,5 +48,5 @@ s2 = 0
 for msg in messages:
     results = check(rules2, msg)
     s2 += 1 if any([valid and not left for valid, left in results]) else 0
-print("2: ", s2)
+print("2:", s2)
 
