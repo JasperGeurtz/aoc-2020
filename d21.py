@@ -1,14 +1,7 @@
 import utils
 
-m = utils.opener.lines("input/21.1.txt")
+m = utils.opener.lines("input/21.txt")
 
-
-"""
-Each allergen is found in exactly one ingredient.
-Each ingredient contains zero or one allergen.
-Allergens aren't always marked; 
-"""
-foods = []
 appearances = {}
 allergens = {}
 
@@ -17,61 +10,33 @@ for line in m:
     ingredients = set(ingredients.split(" "))
     contains = set(contains[:-1].split(", "))
 
-
-    print("line", ingredients, contains)
-
     for ing in ingredients:
-        if ing not in allergens:
-            allergens[ing] = {}
+        if ing not in appearances:
             appearances[ing] = 0
         appearances[ing] += 1
+    for c in contains:
+        if c not in allergens:
+            allergens[c] = []
+        allergens[c].append(set(ingredients))
 
-    foods.append((ingredients, contains))
+sure = {}
+while allergens:
+    for a in list(allergens.keys()):
+        v = allergens[a]
+        inter = v[0].intersection(*v[1:])
+        if len(inter) == 1: # found only possibility
+            found = list(inter)[0]
+            sure[a] = found
+            del allergens[a]
+            for v in allergens.values():
+                for ings in v:
+                    if found in ings:
+                        ings.remove(found)
 
 
-print("foods:", foods)
-print("appearances:", appearances)
-print("allergens:", allergens)
-print("mxmxvkd, kfcds, sqjhc, nhms")
+s1 = sum([v for k, v in appearances.items() if k not in sure])
+print("1:", s1)
 
+s2 = ",".join([sure[k] for k in sorted(sure)])
 
-"""
-mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-trh fvjkl sbzzf mxmxvkd (contains dairy)
-sqjhc fvjkl (contains soy)
-sqjhc mxmxvkd sbzzf (contains fish)
-
-step 1: mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-mxmxvkd = dairy, fish
-kfcds = dairy, fish
-sqjhc = dairy, fish
-nhms = dairy, fish
-
-step 2: trh fvjkl sbzzf mxmxvkd (contains dairy)
-mxmxvkd = dairy !(fish removed)
-kfcds = fish
-sqjhc = fish
-nhms = fish
-trh = 
-fvjkl = 
-sbzzf = 
-
-step 3: sqjhc fvjkl (contains soy)
-mxmxvkd = dairy
-kfcds = fish
-sqjhc = fish, soy
-nhms = fish
-trh = 
-fvjkl = soy
-sbzzf = 
-
-step 4: sqjhc mxmxvkd sbzzf (contains fish)
-mxmxvkd = dairy
-kfcds = 
-sqjhc = fish
-nhms = 
-trh = 
-fvjkl = soy
-sbzzf = 
-kfcds, nhms, sbzzf, or trh
-"""
+print("2:", s2)
