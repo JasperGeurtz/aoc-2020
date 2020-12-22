@@ -1,6 +1,6 @@
 import utils
 
-m = utils.opener.raw("input/20.txt")[:-1]
+m = utils.opener.raw("input/20.1.txt")[:-1]
 
 images = {}
 for img in m.split("\n\n"):
