@@ -19,7 +19,8 @@ def play(cups, moves):
             if goal <= 0:
                 goal = max(cups)
         goal_i = cups.index(goal) + 1
-        cups = cups[:goal_i] + rem + cups[goal_i:]
+        for i in range(2, -1, -1):
+            cups.insert(goal_i, rem[i])
         idx = (cups.index(curr) + 1) % len(cups)
     return cups
 
