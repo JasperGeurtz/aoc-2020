@@ -19,7 +19,7 @@ class CircularLinkedList:
             self.lookup[v] = last
         last.next = self.root
 
-def play(cll: CircularLinkedList, moves):
+def play(cll, moves):
     curr = cll.root
     max_cups = max(cll.lookup.keys())
     for _ in range(moves):
